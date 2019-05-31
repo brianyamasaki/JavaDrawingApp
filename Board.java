@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener {
-    private static final long serialVersionUID = 23;
+    private static final long serialVersionUID = 1;
 
     private Timer timer;
     // private SpaceShip spaceShip;
@@ -30,7 +30,7 @@ public class Board extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         addMouseListener(new MAdapter());
         setBackground(Color.LIGHT_GRAY);
-	      setFocusable(true);
+	    setFocusable(true);
 
         // spaceShip = new SpaceShip();
 
