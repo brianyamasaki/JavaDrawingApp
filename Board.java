@@ -9,15 +9,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import objects.*;
 
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
 
     private Timer timer;
-    // private SpaceShip spaceShip;
+    private ArrayList<GObject> objects;
     private final int DELAY = 10;
 
     public Board() {
@@ -32,7 +34,9 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.LIGHT_GRAY);
 	    setFocusable(true);
 
-        // spaceShip = new SpaceShip();
+        objects = new ArrayList<GObject>();
+
+        objects.add(new GRectangle(50, 50, 100, 100));
 
         timer = new Timer(DELAY, this);
         timer.start();
@@ -51,8 +55,9 @@ public class Board extends JPanel implements ActionListener {
         
         Graphics2D g2d = (Graphics2D) g;
 
-        // g2d.drawImage(spaceShip.getImage(), spaceShip.getX(), 
-        //     spaceShip.getY(), this);
+        for (GObject obj : objects) {
+            obj.draw(g2d);
+        }
     }
     
     @Override
@@ -60,7 +65,7 @@ public class Board extends JPanel implements ActionListener {
         
         step();
     }
-    
+
     private void step() {
         
         // spaceShip.move();
@@ -87,22 +92,27 @@ public class Board extends JPanel implements ActionListener {
     private class MAdapter extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
-          System.out.println("mouse clicked at " + e.getPoint());
+            for (GObject obj : objects) {
+                obj.mouseClick(e);
+            }
+            repaint();
+    
+        //   System.out.println("mouse clicked at " + e.getPoint());
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-          System.out.println("mouse released at " + e.getPoint());
+        //   System.out.println("mouse released at " + e.getPoint());
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-          System.out.println("mouse entered Board");
+        //   System.out.println("mouse entered Board");
         }
         
         @Override
         public void mouseExited(MouseEvent e) {
-          System.out.println("mouse exited Board");
+        //   System.out.println("mouse exited Board");
         }
     }
 }
