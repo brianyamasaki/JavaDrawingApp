@@ -10,9 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import objects.*;
@@ -26,7 +24,7 @@ public class Board extends JPanel implements ActionListener {
 
     public Board() {
 
-        initBoard();
+        this.initBoard();
     }
 
     private void initBoard() {
@@ -39,10 +37,20 @@ public class Board extends JPanel implements ActionListener {
 
         objects = new ArrayList<GObject>();
 
-        objects.add(new GRectangle(50, 50, 100, 100));
+        objects.add(new GRectangle(100, 100, 150, 150));
 
         timer = new Timer(DELAY, this);
         timer.start();
+    }
+
+    public void menuItemCommand(String command) {
+        if (command == AppMenuBar.createRectangle) {
+
+        } else if (command == AppMenuBar.deleteObject) {
+
+        }
+        System.out.println(command);
+
     }
 
     @Override
@@ -111,28 +119,11 @@ public class Board extends JPanel implements ActionListener {
                 repaint(rectUpdate);
         }
 
-        // @Override
-        // public void mousePressed(MouseEvent e) {
-        //     Rectangle rectUpdate = new Rectangle();
-        //     Rectangle rectTemp;
-        //     System.out.println("Mouse Pressed " + e.getPoint());
-        //     for (GObject obj : objects) {
-        //         rectTemp = obj.mousePressed(e);
-        //         if (!rectTemp.isEmpty()) {
-        //             rectUpdate.union(rectTemp);
-        //         } else {
-        //             rectUpdate = rectTemp;
-        //         }
-        //     }
-        //     if (!rectUpdate.isEmpty())
-        //         repaint(rectUpdate);
-        // }
-
         @Override
         public void mouseReleased(MouseEvent e) {
           Rectangle rectUpdate = new Rectangle();
           Rectangle rectTemp;
-          System.out.println("Mouse released at " + e.getPoint());
+        //   System.out.println("Mouse released at " + e.getPoint());
           for (GObject obj : objects) {
               rectTemp = obj.mouseReleased(e);
               if (!rectTemp.isEmpty()) {

@@ -237,7 +237,7 @@ public class GObject {
 			// store the mouse starting location.
 			this.dragStartPoint = e.getPoint();
 			this.dragBoundingRect = new Rectangle(this.boundingRect);
-			System.out.println("mouseDragged first call" + this.boundingRect);
+			// System.out.println("mouseDragged first call" + this.boundingRect);
 		} else {
 			// this is a subsequent mouseDragged call
 			this.dragBoundingRect = this.dragRectangle(
@@ -260,7 +260,7 @@ public class GObject {
 				e.getY() - this.dragStartPoint.y
 				);
 			this.dragMode = DragMode.NotDragging;
-			System.out.println("mouseReleased: dragBoundingRect " + this.dragBoundingRect);
+			// System.out.println("mouseReleased: dragBoundingRect " + this.dragBoundingRect);
 			this.resizeToRect(this.dragBoundingRect);
 			Rectangle rectUnion = this.boundingRect.union(this.dragBoundingRect);
 			rectUnion.grow(dxySelectionSize, dxySelectionSize);

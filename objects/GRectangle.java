@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.awt.event.MouseEvent;
 
 public class GRectangle extends GObject {
@@ -51,7 +50,7 @@ public class GRectangle extends GObject {
 	protected void resizeToRect(Rectangle rect) {
 		this.rect = new Rectangle(rect);
 		this.calcBoundingBox();
-		System.out.println("resizeToRect sets to " + this.rect + " and " + this.boundingRect);
+		// System.out.println("resizeToRect sets to " + this.rect + " and " + this.boundingRect);
 	}
 
 	@Override
