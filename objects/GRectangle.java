@@ -3,6 +3,7 @@ package objects;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
@@ -16,10 +17,14 @@ public class GRectangle extends GObject {
 	public GRectangle(int x, int y, int width, int height) {
 		super();
 		this.rect = new Rectangle(x, y, width, height);
-		this.fillColor = Color.yellow;
+		this.fillColor = Color.white;
 		this.strokeColor = Color.darkGray;
 		this.strokeRadius = 3;
 		this.calcBoundingBox();
+	}
+	@Override
+	protected boolean pointInObject(Point pt) {
+		return rect.contains(pt);
 	}
 
 	@Override
@@ -55,9 +60,9 @@ public class GRectangle extends GObject {
 
 	@Override
 	public Rectangle mouseClick(MouseEvent e) {
-		if (rect.contains(e.getPoint())) {
-			this.setSelected(!this.isSelected);	
-		}
+		boolean clickedInside = this.pointInObject(e.getPoint());
+		this.setSelected(clickedInside ? !this.isSelected : false);
+
 		return this.selectedBoundingBox();
 	}
 	

@@ -13,8 +13,8 @@ public class App extends JFrame implements ActionListener {
     private static final String appName = "Draw Objects";
     private static final int initialWidth = 800;
     private static final int initialHeight = 600;
-    private static int appWidth;
-    private static int appHeight;
+    public static int appWidth;
+    public static int appHeight;
     private Board board;
 
     public App() {
@@ -68,7 +68,7 @@ public class App extends JFrame implements ActionListener {
             String[] dimTokens = tokens[2].split("x");
             dimTokens[1] = dimTokens[1].substring(0, dimTokens[1].length()-1);
             // System.out.println("Component resized " + dimTokens[0] + "x" + dimTokens[1]);
-            App.resized(Integer.parseInt(dimTokens[1], 10), Integer.parseInt(dimTokens[1], 10));
+            App.resized(Integer.parseInt(dimTokens[0], 10), Integer.parseInt(dimTokens[1], 10));
         }
     }
 

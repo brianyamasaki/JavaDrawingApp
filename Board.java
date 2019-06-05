@@ -1,4 +1,5 @@
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,6 +22,7 @@ public class Board extends JPanel implements ActionListener {
     private Timer timer;
     private ArrayList<GObject> objects;
     private final int DELAY = 10;
+    private final int gridInterval = 100;
 
     public Board() {
 
@@ -45,7 +47,8 @@ public class Board extends JPanel implements ActionListener {
 
     public void menuItemCommand(String command) {
         if (command == AppMenuBar.createRectangle) {
-
+            objects.add(new GRectangle(150, 150, 150, 150));
+            repaint();
         } else if (command == AppMenuBar.deleteObject) {
             this.deleteSelected();
         }
@@ -62,17 +65,32 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        doDrawing(g);
+        paintBackground((Graphics2D)g);
+        doDrawing((Graphics2D)g);
         
         Toolkit.getDefaultToolkit().sync();
     }
     
-    private void doDrawing(Graphics g) {
-        
-        Graphics2D g2d = (Graphics2D) g;
+    private void paintBackground(Graphics2D g2) {
+        int x = gridInterval;
+        int y = gridInterval;
+        float[] dashArray = {15, 20};
+        BasicStroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1, dashArray, 1);
+        g2.setStroke(stroke);
+        while (x < App.appWidth) {
+            g2.drawLine(x, 0, x, App.appHeight);
+            x += gridInterval;
+        }
+        while (y < App.appHeight) {
+            g2.drawLine(0, y, App.appWidth, y);
+            y += gridInterval;
+        }
+    }
 
+    private void doDrawing(Graphics2D g2) {
+        
         for (GObject obj : objects) {
-            obj.draw(g2d);
+            obj.draw(g2);
         }
     }
     
@@ -110,14 +128,11 @@ public class Board extends JPanel implements ActionListener {
         public void mouseClicked(MouseEvent e) {
             Rectangle rectUpdate = new Rectangle();
             Rectangle rectTemp;
-            for (GObject obj : objects) {
-                rectTemp = obj.mouseClick(e);
+            // iterate front to back, so backward in the list
+            for (int i = objects.size() - 1;  i >= 0; i--) {
+                rectTemp = objects.get(i).mouseClick(e);
                 if (!rectTemp.isEmpty()) {
-                    if (!rectUpdate.isEmpty()) {
-                        rectUpdate.union(rectTemp);
-                    } else {
-                        rectUpdate = rectTemp;
-                    }
+                    rectUpdate = rectUpdate.union(rectTemp);
                 } 
             }
             if (!rectUpdate.isEmpty())
@@ -128,17 +143,12 @@ public class Board extends JPanel implements ActionListener {
         public void mouseReleased(MouseEvent e) {
           Rectangle rectUpdate = new Rectangle();
           Rectangle rectTemp;
-        //   System.out.println("Mouse released at " + e.getPoint());
           for (GObject obj : objects) {
-              rectTemp = obj.mouseReleased(e);
-              if (!rectTemp.isEmpty()) {
-                  rectUpdate.union(rectTemp);
-              } else {
-                  rectUpdate = rectTemp;
-              }
+            rectTemp = obj.mouseReleased(e);
+            rectUpdate = rectUpdate.union(rectTemp);
           }
           if (!rectUpdate.isEmpty())
-              repaint();
+            repaint();
       }
 
     }
@@ -149,14 +159,9 @@ public class Board extends JPanel implements ActionListener {
         public void mouseDragged(MouseEvent e) {
             Rectangle rectUpdate = new Rectangle();
             Rectangle rectTemp;
-            // System.out.println("mouse dragged at " + e.getPoint());
             for (GObject obj : objects) {
                 rectTemp = obj.mouseDragged(e);
-                // if (!rectTemp.isEmpty()) {
-                    rectUpdate = rectUpdate.union(rectTemp);
-                // } else {
-                //     rectUpdate = rectTemp;
-                // }
+                rectUpdate = rectUpdate.union(rectTemp);
             }
             if (!rectUpdate.isEmpty()) {
                 // System.out.println("drag update rectangle is " + rectUpdate);

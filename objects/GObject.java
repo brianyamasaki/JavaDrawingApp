@@ -124,16 +124,22 @@ public class GObject {
 		int i;
 		int max = this.selectionList.size();
 		Rectangle rect;
+		Point pt = e.getPoint();
 		assert(this.isSelected == true);
 		for (i = 0; i < max; i++) {
 			rect = this.selectionList.get(i);
-			if (rect.contains(e.getPoint())) {
+			if (rect.contains(pt)) {
 				break;
 			}
 		}
-		if (i >= max)
-			return DragMode.Object;
-		else
+		if (i >= max) {
+			if (this.pointInObject(pt)) {
+				return DragMode.Object;
+			} else {
+				this.setSelected(false);
+				return DragMode.NotDragging;
+			}
+		} else
 			return this.mpSelectionHandle[i];
 	}
 
@@ -161,6 +167,10 @@ public class GObject {
 	protected void resizeToRect(Rectangle rect) {
 	}
 
+	protected boolean pointInObject(Point pt) {
+		return false;
+	}
+
 	protected Rectangle selectedBoundingBox() {
 		return new Rectangle(
 			this.boundingRect.x - dxyHalf, 
@@ -169,19 +179,6 @@ public class GObject {
 			this.boundingRect.height + dxySelectionSize);
 	}
 
-	// public Rectangle mousePressed(MouseEvent e) {
-	// 	if (this.isSelected) {
-	// 		this.dragStartPoint = e.getPoint();
-	// 		this.dragMode = this.mousePointSelection(e);
-	// 		if (this.dragMode != DragMode.NotDragging) {
-	// 			return this.selectedBoundingBox();
-	// 		} else if (this.boundingRect.contains(this.dragStartPoint)){
-	// 			this.dragMode = DragMode.Object;
-	// 			return this.selectedBoundingBox();
-	// 		}
-	// 	}
-	// 	return new Rectangle();
-	// }
 	private Rectangle dragRectangle(int xDiff, int yDiff) {
 		int left = this.boundingRect.x;
 		int top = this.boundingRect.y;
@@ -234,7 +231,7 @@ public class GObject {
 	public Rectangle mouseDragged(MouseEvent e) {
 		if (!this.isSelected) {
 			return new Rectangle();
-		} 
+		}
 		if (this.dragMode == DragMode.NotDragging){
 			// this is the first mouseDragged call
 			this.dragMode = this.mousePointSelection(e);
