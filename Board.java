@@ -2,6 +2,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -31,6 +33,7 @@ public class Board extends JPanel implements ActionListener {
 
         addKeyListener(new TAdapter());
         addMouseListener(new MAdapter());
+        addMouseMotionListener(new MMAdapter());
         setBackground(Color.LIGHT_GRAY);
 	    setFocusable(true);
 
@@ -72,7 +75,7 @@ public class Board extends JPanel implements ActionListener {
         
         // repaint(spaceShip.getX()-1, spaceShip.getY()-1, 
         //         spaceShip.getWidth()+2, spaceShip.getHeight()+2);     
-    }    
+    }
 
     private class TAdapter extends KeyAdapter {
 
@@ -92,27 +95,77 @@ public class Board extends JPanel implements ActionListener {
     private class MAdapter extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
+            Rectangle rectUpdate = new Rectangle();
+            Rectangle rectTemp;
             for (GObject obj : objects) {
-                obj.mouseClick(e);
+                rectTemp = obj.mouseClick(e);
+                if (!rectTemp.isEmpty()) {
+                    if (!rectUpdate.isEmpty()) {
+                        rectUpdate.union(rectTemp);
+                    } else {
+                        rectUpdate = rectTemp;
+                    }
+                } 
             }
-            repaint();
-    
-        //   System.out.println("mouse clicked at " + e.getPoint());
+            if (!rectUpdate.isEmpty())
+                repaint(rectUpdate);
         }
+
+        // @Override
+        // public void mousePressed(MouseEvent e) {
+        //     Rectangle rectUpdate = new Rectangle();
+        //     Rectangle rectTemp;
+        //     System.out.println("Mouse Pressed " + e.getPoint());
+        //     for (GObject obj : objects) {
+        //         rectTemp = obj.mousePressed(e);
+        //         if (!rectTemp.isEmpty()) {
+        //             rectUpdate.union(rectTemp);
+        //         } else {
+        //             rectUpdate = rectTemp;
+        //         }
+        //     }
+        //     if (!rectUpdate.isEmpty())
+        //         repaint(rectUpdate);
+        // }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-        //   System.out.println("mouse released at " + e.getPoint());
-        }
+          Rectangle rectUpdate = new Rectangle();
+          Rectangle rectTemp;
+          System.out.println("Mouse released at " + e.getPoint());
+          for (GObject obj : objects) {
+              rectTemp = obj.mouseReleased(e);
+              if (!rectTemp.isEmpty()) {
+                  rectUpdate.union(rectTemp);
+              } else {
+                  rectUpdate = rectTemp;
+              }
+          }
+          if (!rectUpdate.isEmpty())
+              repaint();
+      }
+
+    }
+
+    private class MMAdapter extends MouseAdapter {
 
         @Override
-        public void mouseEntered(MouseEvent e) {
-        //   System.out.println("mouse entered Board");
-        }
-        
-        @Override
-        public void mouseExited(MouseEvent e) {
-        //   System.out.println("mouse exited Board");
+        public void mouseDragged(MouseEvent e) {
+            Rectangle rectUpdate = new Rectangle();
+            Rectangle rectTemp;
+            // System.out.println("mouse dragged at " + e.getPoint());
+            for (GObject obj : objects) {
+                rectTemp = obj.mouseDragged(e);
+                // if (!rectTemp.isEmpty()) {
+                    rectUpdate = rectUpdate.union(rectTemp);
+                // } else {
+                //     rectUpdate = rectTemp;
+                // }
+            }
+            if (!rectUpdate.isEmpty()) {
+                // System.out.println("drag update rectangle is " + rectUpdate);
+                repaint(rectUpdate);
+            }
         }
     }
 }
