@@ -22,7 +22,7 @@ enum DragMode {
 
 public class GObject {
 	protected Rectangle boundingRect;
-	protected final int dxySelectionSize = 10;
+	protected final int dxySelectionSize = 12;
 	protected final int dxyHalf = dxySelectionSize / 2;
 	protected ArrayList<Rectangle> selectionList;
 	protected DragMode[] mpSelectionHandle = {
@@ -182,7 +182,7 @@ public class GObject {
 		int left = this.boundingRect.x;
 		int top = this.boundingRect.y;
 		int width = this.boundingRect.width;
-		int height = this.boundingRect.width;
+		int height = this.boundingRect.height;
 		switch (this.dragMode) {
 			case TopLeft:
 				left += xDiff;
