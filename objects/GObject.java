@@ -142,6 +142,10 @@ public class GObject {
 		this.dragMode = DragMode.NotDragging;
 	}
 
+	public boolean isSelected() {
+		return this.isSelected;
+	}
+
 	public void draw(Graphics2D g2) {
 		
 	}

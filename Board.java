@@ -47,10 +47,15 @@ public class Board extends JPanel implements ActionListener {
         if (command == AppMenuBar.createRectangle) {
 
         } else if (command == AppMenuBar.deleteObject) {
-
+            this.deleteSelected();
         }
         System.out.println(command);
 
+    }
+
+    private void deleteSelected() {
+        this.objects.removeIf((obj) -> obj.isSelected());
+        repaint();
     }
 
     @Override
