@@ -13,7 +13,7 @@ public class AppContent extends JPanel {
     super(new BorderLayout());
 
     this.toolBar = new ToolBar(listener);
-    this.add(this.toolBar, BorderLayout.PAGE_START);
+    this.add(this.toolBar, BorderLayout.WEST);
     
     this.board = new Board();
     this.add(this.board, BorderLayout.CENTER);

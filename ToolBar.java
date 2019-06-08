@@ -7,13 +7,19 @@ import javax.swing.JToolBar;
 public class ToolBar extends JToolBar {
   private static final long serialVersionUID = 1L;
   private ActionListener listener;
-  private int orientation = HORIZONTAL;
+  private int orientation;
 
   public ToolBar(ActionListener listener) {
+    JButton button;
     this.listener = listener;
 
-    this.addButton("Hello", "HelloAction", "Hello There", "assets/rectangle.png");
-    this.addButton("Goodbye", "GoodbyeAction", "Goodbye and Goodnight", "assets/rectangle.png");
+    this.orientation = VERTICAL;
+    this.setOrientation(orientation);
+
+    button = this.addButton("Hello", "HelloAction", "Hello There", "assets/rectangle.png");
+    this.add(button);
+    button = this.addButton("Goodbye", "GoodbyeAction", "Goodbye and Goodnight", "assets/rectangle.png");
+    this.add(button);
   }
 
   private JButton addButton(String btnText, String actionCommand, String toolTipText, String url) {
