@@ -1,5 +1,6 @@
 
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,18 +14,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import javax.swing.Timer;
+// import javax.swing.Timer;
 import objects.*;
 
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
 
-    private Timer timer;
+    // private Timer timer;
     private ArrayList<GObject> objects;
-    private final int DELAY = 10;
+    // private final int DELAY = 10;
     private final int gridInterval = 100;
 
     public Board() {
+        super(new BorderLayout());
 
         this.initBoard();
     }
@@ -36,23 +38,23 @@ public class Board extends JPanel implements ActionListener {
         addMouseMotionListener(new MMAdapter());
         setBackground(Color.LIGHT_GRAY);
 	    setFocusable(true);
-
+        
         objects = new ArrayList<GObject>();
 
         objects.add(new GRectangle(100, 100, 150, 150));
 
-        timer = new Timer(DELAY, this);
-        timer.start();
+        // timer = new Timer(DELAY, this);
+        // timer.start();
     }
 
     public void menuItemCommand(String command) {
-        if (command == AppMenuBar.createRectangle) {
+        if (command.matches(AppMenuBar.createRectangle)) {
             objects.add(new GRectangle(150, 150, 150, 150));
             repaint();
-        } else if (command == AppMenuBar.deleteObject) {
+        } else if (command.matches(AppMenuBar.deleteObject)) {
             this.deleteSelected();
         }
-        System.out.println(command);
+        // System.out.println(command);
 
     }
 

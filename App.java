@@ -8,15 +8,15 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 
 public class App extends JFrame implements ActionListener {
-    private static final long serialVersionUID = 22;
+    private static final long serialVersionUID = 1;
 
     private static final String appName = "Draw Objects";
     private static final int initialWidth = 800;
     private static final int initialHeight = 600;
     public static int appWidth;
     public static int appHeight;
-    private Board board;
-
+    private AppContent appContent;
+    
     public App() {
         // Returns the size when user resizes the Window
         this.addComponentListener(new CAdapter());
@@ -27,8 +27,8 @@ public class App extends JFrame implements ActionListener {
 
     private void initUI() {
 
-        this.board = new Board();
-        this.add(this.board);
+        this.appContent = new AppContent(this);
+        this.add(this.appContent);
 
         // set the window title
         this.setTitle(appName);
@@ -51,10 +51,17 @@ public class App extends JFrame implements ActionListener {
     }
     
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() == AppMenuBar.exitItem) {
-            System.exit(0);
+        String action = e.getActionCommand();
+        String[] actionParts = action.split(AppMenuBar.actionFormatSplitRegex);
+        if (actionParts[0].matches(AppMenuBar.app)) {
+            // signifies this is an App command
+            switch (actionParts[1]) {
+                case AppMenuBar.exitItem:
+                    System.exit(0);
+                    break;
+            }
         } else {
-            this.board.menuItemCommand(e.getActionCommand());
+            this.appContent.menuItemCommand(actionParts[0], actionParts[1]);
         }
     }
 
@@ -73,7 +80,8 @@ public class App extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-
+        //Schedule a job for the event-dispatching thread:
+        //creating and showing this application's GUI.
         EventQueue.invokeLater(() -> {
             App ex = new App();
             ex.setVisible(true);
