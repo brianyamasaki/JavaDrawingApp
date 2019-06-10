@@ -8,17 +8,19 @@ public class ToolBar extends JToolBar {
   private static final long serialVersionUID = 1L;
   private ActionListener listener;
   private int orientation;
+  private AppState appState;
 
-  public ToolBar(ActionListener listener) {
+  public ToolBar(ActionListener listener, AppState appState) {
     JButton button;
     this.listener = listener;
+    this.appState = appState;
 
     this.orientation = VERTICAL;
     this.setOrientation(orientation);
 
-    button = this.addButton("Hello", "HelloAction", "Hello There", "assets/rectangle.png");
+    button = this.addButton("Hello", "App.HelloAction", "Hello There", "assets/rectangle.png");
     this.add(button);
-    button = this.addButton("Goodbye", "GoodbyeAction", "Goodbye and Goodnight", "assets/rectangle.png");
+    button = this.addButton("Goodbye", "App.GoodbyeAction", "Goodbye and Goodnight", "assets/rectangle.png");
     this.add(button);
   }
 

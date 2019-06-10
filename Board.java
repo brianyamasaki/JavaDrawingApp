@@ -19,15 +19,17 @@ import objects.*;
 
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
+    private AppState appState;
 
     // private Timer timer;
     private ArrayList<GObject> objects;
     // private final int DELAY = 10;
     private final int gridInterval = 100;
 
-    public Board() {
+    public Board(AppState appState) {
         super(new BorderLayout());
 
+        this.appState = appState;
         this.initBoard();
     }
 
@@ -48,26 +50,38 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void menuItemCommand(String command) {
-        if (command.matches(AppMenuBar.createRectangle)) {
-            objects.add(new GRectangle(150, 150, 150, 150));
-            repaint();
-        } else if (command.matches(AppMenuBar.deleteObject)) {
-            this.deleteSelected();
+        switch(command) {
+            case AppMenuBar.createRectangle:
+                objects.add(new GRectangle(150, 150, 150, 150));
+                break;
+            case AppMenuBar.deleteObject:
+                this.deleteSelected();
+                break;
+            case AppMenuBar.showGridAction:
+                appState.setGrid(!appState.getGrid());
+                break;
         }
-        // System.out.println(command);
+        // if (command.matches(AppMenuBar.createRectangle)) {
+        //     objects.add(new GRectangle(150, 150, 150, 150));
+        //     repaint();
+        // } else if (command.matches(AppMenuBar.deleteObject)) {
+        //     this.deleteSelected();
+        // }
+        repaint();
 
     }
 
     private void deleteSelected() {
         this.objects.removeIf((obj) -> obj.isSelected());
-        repaint();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        paintBackground((Graphics2D)g);
+        if (appState.getGrid()) {
+            paintBackground((Graphics2D)g);
+        }
         doDrawing((Graphics2D)g);
         
         Toolkit.getDefaultToolkit().sync();

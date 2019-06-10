@@ -9,20 +9,20 @@ public class AppContent extends JPanel {
   private Board board;
   private ToolBar toolBar;
 
-  public AppContent(ActionListener listener) {
+  public AppContent(ActionListener listener, AppState appState) {
     super(new BorderLayout());
 
-    this.toolBar = new ToolBar(listener);
+    // create a toolbar
+    this.toolBar = new ToolBar(listener, appState);
+    // place toolbar on the left side of JPanel
     this.add(this.toolBar, BorderLayout.WEST);
     
-    this.board = new Board();
+    this.board = new Board(appState);
     this.add(this.board, BorderLayout.CENTER);
 
   }
 
   public void menuItemCommand(String part1, String part2) {
-    if (part1.equals(AppMenuBar.objectMenuTitle)) {
-      this.board.menuItemCommand(part2);
-    } 
+    this.board.menuItemCommand(part2);
   }
 }

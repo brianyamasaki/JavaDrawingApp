@@ -16,6 +16,7 @@ public class App extends JFrame implements ActionListener {
     public static int appWidth;
     public static int appHeight;
     private AppContent appContent;
+    private AppState appState;
     
     public App() {
         // Returns the size when user resizes the Window
@@ -27,7 +28,8 @@ public class App extends JFrame implements ActionListener {
 
     private void initUI() {
 
-        this.appContent = new AppContent(this);
+        this.appState = new AppState(this);
+        this.appContent = new AppContent(this, this.appState);
         this.add(this.appContent);
 
         // set the window title
@@ -42,7 +44,7 @@ public class App extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // add a Menubar with menus
-        this.setJMenuBar(new AppMenuBar(this));
+        this.setJMenuBar(new AppMenuBar(this, this.appState));
     }
 
     private static void resized(int width, int height) {

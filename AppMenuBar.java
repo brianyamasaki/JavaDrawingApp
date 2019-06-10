@@ -1,9 +1,12 @@
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
+// import actions.ShowGridAction;
 
 public class AppMenuBar extends JMenuBar {
 
@@ -15,12 +18,16 @@ public class AppMenuBar extends JMenuBar {
   public static final String objectMenuTitle = "Object";
   public static final String createRectangle = "Create Rectangle";
   public static final String deleteObject = "Delete";
+  public static final String optionMenuTitle = "Option";
+  public static final String showGrid = "Show Grid";
+  public static final String showGridAction = "ShowGrid";
+  
   public static final String actionFormat = "%s.%s";
   public static final String actionFormatSplitRegex = "\\.";
   
   ActionListener listener;
   
-  public AppMenuBar (ActionListener listener) {
+  public AppMenuBar (ActionListener listener, AppState appState) {
     JMenu menu;
 
     this.listener = listener;
@@ -35,6 +42,10 @@ public class AppMenuBar extends JMenuBar {
     menu.addSeparator();
     this.addMenuItem(menu, AppMenuBar.deleteObject, KeyEvent.VK_D, "Delete Selected Object",
       String.format(AppMenuBar.actionFormat, AppMenuBar.objectMenuTitle, AppMenuBar.deleteObject));
+
+    menu = this.addMenu(AppMenuBar.optionMenuTitle, KeyEvent.VK_2, "Options");
+    this.addActionMenuItem(menu, appState.getGridAction(),
+      String.format(AppMenuBar.optionMenuTitle, AppMenuBar.app, AppMenuBar.showGridAction));
   }
 
   // create a menu
@@ -54,6 +65,14 @@ public class AppMenuBar extends JMenuBar {
     menuItem = new JMenuItem(itemName, keyEvent);
     menuItem.getAccessibleContext().setAccessibleDescription(description);
     menuItem.addActionListener(this.listener);
+    menuItem.setActionCommand(actionCommand);
+    menu.add(menuItem);
+  }
+
+  public void addActionMenuItem(JMenu menu, Action action, String actionCommand) {
+    JMenuItem menuItem;
+
+    menuItem = new JMenuItem(action);
     menuItem.setActionCommand(actionCommand);
     menu.add(menuItem);
   }
