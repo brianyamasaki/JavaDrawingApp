@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -19,7 +20,7 @@ import objects.*;
 
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
-    private AppState appState;
+    private static AppState appState;
 
     // private Timer timer;
     private ArrayList<GObject> objects;
@@ -29,7 +30,7 @@ public class Board extends JPanel implements ActionListener {
     public Board(AppState appState) {
         super(new BorderLayout());
 
-        this.appState = appState;
+        Board.appState = appState;
         this.initBoard();
     }
 
@@ -61,12 +62,6 @@ public class Board extends JPanel implements ActionListener {
                 appState.setGrid(!appState.getGrid());
                 break;
         }
-        // if (command.matches(AppMenuBar.createRectangle)) {
-        //     objects.add(new GRectangle(150, 150, 150, 150));
-        //     repaint();
-        // } else if (command.matches(AppMenuBar.deleteObject)) {
-        //     this.deleteSelected();
-        // }
         repaint();
 
     }
@@ -108,6 +103,11 @@ public class Board extends JPanel implements ActionListener {
         for (GObject obj : objects) {
             obj.draw(g2);
         }
+
+        ArrayList<GObject> selectedObjects = appState.getSelectedObjects();
+        for (GObject obj : selectedObjects) {
+            obj.drawSelection(g2);
+        }
     }
     
     @Override
@@ -122,6 +122,23 @@ public class Board extends JPanel implements ActionListener {
         
         // repaint(spaceShip.getX()-1, spaceShip.getY()-1, 
         //         spaceShip.getWidth()+2, spaceShip.getHeight()+2);     
+    }
+
+    public static GObjReturn pointInSelection(MouseEvent e) {
+        GObjReturn objReturn = new GObjReturn();
+        Point pt = e.getPoint();
+        ArrayList<GObject> selectedObjects = appState.getSelectedObjects();
+        for (GObject obj : selectedObjects) {
+            if (obj.pointInObject(pt)) {
+                objReturn.setClickMode(ClickMode.onObject);
+                break;
+            }
+            if (obj.pointInSelection(pt) >= 0) {
+                objReturn.setClickMode(ClickMode.onSelection);
+                break;
+            }
+        }
+        return objReturn;
     }
 
     private class TAdapter extends KeyAdapter {
@@ -142,14 +159,35 @@ public class Board extends JPanel implements ActionListener {
     private class MAdapter extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
+            GObjReturn objReturn;
             Rectangle rectUpdate = new Rectangle();
-            Rectangle rectTemp;
-            // iterate front to back, so backward in the list
+            Rectangle rectT;
+            boolean isShiftDown = e.isShiftDown();
+            objReturn = Board.pointInSelection(e);
+            if (objReturn.getClickMode() != ClickMode.onNothing && !isShiftDown) {
+                // simply clicked on already selected objects, do nothing and return
+                return;
+            }
+            GObject obj = null;
+            // iterate from front object to back object, 
+            // therefore loop backwards in the list
             for (int i = objects.size() - 1;  i >= 0; i--) {
-                rectTemp = objects.get(i).mouseClick(e);
-                if (!rectTemp.isEmpty()) {
-                    rectUpdate = rectUpdate.union(rectTemp);
-                } 
+                objReturn = objects.get(i).mouseClick(e);
+                rectT = objReturn.getUpdateRect();
+                if (!rectT.isEmpty()) {
+                    rectUpdate = rectUpdate.union(rectT);
+                }
+                if (objReturn.getClickMode() != ClickMode.onNothing && obj == null) {
+                    obj = objects.get(i);
+                    if (!isShiftDown) {
+                        appState.clearAllSelectedObjects();
+                    }
+                    appState.addSelectedObject(obj);
+                    obj.setSelected(true);
+                }
+            }
+            if (obj == null) {
+                appState.clearAllSelectedObjects();
             }
             if (!rectUpdate.isEmpty())
                 repaint(rectUpdate);
@@ -157,14 +195,14 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-          Rectangle rectUpdate = new Rectangle();
-          Rectangle rectTemp;
-          for (GObject obj : objects) {
-            rectTemp = obj.mouseReleased(e);
-            rectUpdate = rectUpdate.union(rectTemp);
-          }
-          if (!rectUpdate.isEmpty())
-            repaint();
+            GObjReturn objReturn;
+            Rectangle rectUpdate = new Rectangle();
+            for (GObject obj : objects) {
+                objReturn = obj.mouseReleased(e);
+                rectUpdate = objReturn.getUpdateRect().union(rectUpdate);
+            }
+            if (!rectUpdate.isEmpty())
+                repaint();
       }
 
     }
@@ -173,11 +211,11 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void mouseDragged(MouseEvent e) {
+            GObjReturn objReturn = new GObjReturn();
             Rectangle rectUpdate = new Rectangle();
-            Rectangle rectTemp;
             for (GObject obj : objects) {
-                rectTemp = obj.mouseDragged(e);
-                rectUpdate = rectUpdate.union(rectTemp);
+                objReturn = obj.mouseDragged(e);
+                rectUpdate = rectUpdate.union(objReturn.getUpdateRect());
             }
             if (!rectUpdate.isEmpty()) {
                 // System.out.println("drag update rectangle is " + rectUpdate);

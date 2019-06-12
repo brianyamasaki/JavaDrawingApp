@@ -42,10 +42,14 @@ public class AppState {
   }
 
   public void removeSelectedObject(GObject object) {
+    object.setSelected(false);
     this.selectedObjects.remove(object);
   }
 
   public void clearAllSelectedObjects() {
+    for (GObject obj : this.selectedObjects) {
+      obj.setSelected(false);
+    }
     this.selectedObjects.clear();
   }
 

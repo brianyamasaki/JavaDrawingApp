@@ -23,7 +23,7 @@ public class GRectangle extends GObject {
 		this.calcBoundingBox();
 	}
 	@Override
-	protected boolean pointInObject(Point pt) {
+	public boolean pointInObject(Point pt) {
 		return rect.contains(pt);
 	}
 
@@ -46,9 +46,6 @@ public class GRectangle extends GObject {
 		g2.setPaint(this.strokeColor);
 		g2.setStroke(new BasicStroke(this.strokeRadius));
 		g2.drawRect(drawRect.x, drawRect.y, drawRect.width, drawRect.height);
-		if (this.isSelected) {
-			drawSelection(g2);
-		}
 	}
 
 	@Override
@@ -58,14 +55,6 @@ public class GRectangle extends GObject {
 		// System.out.println("resizeToRect sets to " + this.rect + " and " + this.boundingRect);
 	}
 
-	@Override
-	public Rectangle mouseClick(MouseEvent e) {
-		boolean clickedInside = this.pointInObject(e.getPoint());
-		this.setSelected(clickedInside ? !this.isSelected : false);
-
-		return this.selectedBoundingBox();
-	}
-	
 	public String toString() {
 		return String.format("<Rectangle x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" />", rect.x, rect.y, rect.width, rect.height);
 	}

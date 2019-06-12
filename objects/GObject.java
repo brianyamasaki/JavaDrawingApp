@@ -49,7 +49,12 @@ public class GObject {
 		this.calcSelectionList();
 	}
 
-		protected void calcSelectionList() {
+	/**
+	 * creates the list of selection markers based on the bounding 
+	 * rectangle of the object
+	 *
+	 */
+	protected void calcSelectionList() {
 		this.selectionList = new ArrayList<Rectangle>();
 		Rectangle boundingRect;
 
@@ -119,20 +124,30 @@ public class GObject {
 								this.dxySelectionSize)
 		);
 	}
-
-	protected DragMode mousePointSelection(MouseEvent e) {
-		int i;
-		int max = this.selectionList.size();
-		Rectangle rect;
-		Point pt = e.getPoint();
-		assert(this.isSelected == true);
-		for (i = 0; i < max; i++) {
-			rect = this.selectionList.get(i);
-			if (rect.contains(pt)) {
-				break;
+	/**
+	 * Returns an index if pt is within any of the selection markers 
+	 * @param  pt  a point to test against the selection markers
+	 * @return  index of selection marker OR -1 if pt not within any selection markers
+	 */
+	public int pointInSelection(Point pt) {
+		int iMax = this.selectionList.size();
+		for (int i = 0; i < iMax; i++) {
+			if (this.selectionList.get(i).contains(pt)) {
+				return i;
 			}
 		}
-		if (i >= max) {
+		return -1;
+	}
+
+	/**
+	 * Returns how mouse location relates to this object
+	 * @param  MouseEvent as passed by MouseListener
+	 * @return  DragMode on where mouse location relates to object
+	 */
+	protected DragMode mousePointSelection(MouseEvent e) {
+		Point pt = e.getPoint();
+		int i = this.pointInSelection(pt);
+		if (i < 0) {
 			if (this.pointInObject(pt)) {
 				return DragMode.Object;
 			} else {
@@ -143,7 +158,7 @@ public class GObject {
 			return this.mpSelectionHandle[i];
 	}
 
-	protected void setSelected(boolean toSelect) {
+	public void setSelected(boolean toSelect) {
 		this.isSelected = toSelect;
 		this.dragMode = DragMode.NotDragging;
 	}
@@ -156,7 +171,7 @@ public class GObject {
 		
 	}
 
-	protected void drawSelection(Graphics2D g2) {
+	public void drawSelection(Graphics2D g2) {
 		g2.setXORMode(Color.white);
 		for(Rectangle rect : this.selectionList) {
 			g2.fillRect(rect.x, rect.y, rect.width, rect.height);
@@ -167,7 +182,7 @@ public class GObject {
 	protected void resizeToRect(Rectangle rect) {
 	}
 
-	protected boolean pointInObject(Point pt) {
+	public boolean pointInObject(Point pt) {
 		return false;
 	}
 
@@ -228,9 +243,14 @@ public class GObject {
 		return new Rectangle(left, top, width, height);
 }
 
-	public Rectangle mouseDragged(MouseEvent e) {
+	/* Mouse dragging starts with a mouseDragged event (not a mouseDown), 
+	*  followed by more mouseDragged events and finishes with a 
+	*  mouseReleased event.
+	*/
+	public GObjReturn mouseDragged(MouseEvent e) {
+		GObjReturn objReturn = new GObjReturn();
 		if (!this.isSelected) {
-			return new Rectangle();
+			return objReturn;
 		}
 		if (this.dragMode == DragMode.NotDragging){
 			// this is the first mouseDragged call
@@ -238,23 +258,23 @@ public class GObject {
 			// store the mouse starting location.
 			this.dragStartPoint = e.getPoint();
 			this.dragBoundingRect = new Rectangle(this.boundingRect);
-			// System.out.println("mouseDragged first call" + this.boundingRect);
 		} else {
 			// this is a subsequent mouseDragged call
 			this.dragBoundingRect = this.dragRectangle(
 				e.getX() - this.dragStartPoint.x, 
 				e.getY() - this.dragStartPoint.y
 				);
-			// System.out.println("dragBoundingRect = " + this.dragBoundingRect);
 			this.calcSelectionList();
 			Rectangle rectUnion = this.boundingRect.union(this.dragBoundingRect);
 			rectUnion.grow(dxySelectionSize, dxySelectionSize);
-			return rectUnion;
+			objReturn.setUpdateRect(rectUnion);
+			return objReturn;
 		}
-		return new Rectangle();
+		return objReturn;
 	}
 
-	public Rectangle mouseReleased(MouseEvent e) {
+	public GObjReturn mouseReleased(MouseEvent e) {
+		GObjReturn objReturn = new GObjReturn();
 		if (this.isSelected && this.dragMode != DragMode.NotDragging) {
 			this.dragBoundingRect = this.dragRectangle(
 				e.getX() - this.dragStartPoint.x, 
@@ -265,13 +285,27 @@ public class GObject {
 			this.resizeToRect(this.dragBoundingRect);
 			Rectangle rectUnion = this.boundingRect.union(this.dragBoundingRect);
 			rectUnion.grow(dxySelectionSize, dxySelectionSize);
-			return rectUnion;
+			objReturn.setUpdateRect(rectUnion);
+			return objReturn;
 		}
-		return new Rectangle();
+		return objReturn;
 	}
 
-	public Rectangle mouseClick(MouseEvent e) {
-		return this.selectedBoundingBox();
+	public GObjReturn mouseClick(MouseEvent e) {
+		ClickMode cm;
+		Point pt = e.getPoint();
+		GObjReturn objReturn = new GObjReturn();
+		int i = this.pointInSelection(pt);
+		if (i >= 0) {
+			cm = ClickMode.onSelection;
+		} else if (this.pointInObject(pt)) {
+			cm = ClickMode.onObject;
+		} else {
+			cm = ClickMode.onNothing;
+		}
+		objReturn.setClickMode(cm);
+		objReturn.setUpdateRect(this.selectedBoundingBox());
+		return objReturn;
 	}
 
 	public String toString() {
