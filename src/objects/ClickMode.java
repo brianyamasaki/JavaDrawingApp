@@ -1,4 +1,4 @@
-package objects;
+package src.objects;
 
 public enum ClickMode {
   onSelection,

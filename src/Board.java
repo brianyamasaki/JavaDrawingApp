@@ -1,3 +1,4 @@
+package src;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -16,11 +17,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 // import javax.swing.Timer;
-import objects.*;
+import src.objects.*;
 
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
-    private static AppState appState;
+    public static AppState appState;
+    public static Board self;
 
     // private Timer timer;
     private ArrayList<GObject> objects;
@@ -31,6 +33,8 @@ public class Board extends JPanel implements ActionListener {
         super(new BorderLayout());
 
         Board.appState = appState;
+        Board.self = this;
+        appState.setDrawingPanel(this);
         this.initBoard();
     }
 
@@ -44,7 +48,7 @@ public class Board extends JPanel implements ActionListener {
         
         objects = new ArrayList<GObject>();
 
-        objects.add(new GRectangle(100, 100, 150, 150));
+        objects.add(new GImage(100, 100, 400, 400));
 
         // timer = new Timer(DELAY, this);
         // timer.start();
@@ -100,10 +104,12 @@ public class Board extends JPanel implements ActionListener {
 
     private void doDrawing(Graphics2D g2) {
         
+        // draw objects
         for (GObject obj : objects) {
             obj.draw(g2);
         }
 
+        // draw selection dots
         ArrayList<GObject> selectedObjects = appState.getSelectedObjects();
         for (GObject obj : selectedObjects) {
             obj.drawSelection(g2);

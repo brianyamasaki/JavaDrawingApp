@@ -1,11 +1,10 @@
-package objects;
+package src.objects;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 
 public class GRectangle extends GObject {
 
@@ -22,6 +21,7 @@ public class GRectangle extends GObject {
 		this.strokeRadius = 3;
 		this.calcBoundingBox();
 	}
+	
 	@Override
 	public boolean pointInObject(Point pt) {
 		return rect.contains(pt);

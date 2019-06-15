@@ -1,4 +1,4 @@
-package objects;
+package src.objects;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -194,11 +194,18 @@ public class GObject {
 			this.boundingRect.height + dxySelectionSize);
 	}
 
-	private Rectangle dragRectangle(int xDiff, int yDiff) {
+	private Rectangle dragRectangle(int xDiff, int yDiff, boolean isShiftDown) {
 		int left = this.boundingRect.x;
 		int top = this.boundingRect.y;
 		int width = this.boundingRect.width;
 		int height = this.boundingRect.height;
+		if (isShiftDown) {
+			int dxy = Math.min(Math.abs(xDiff), Math.abs(yDiff));
+			System.out.println("input (" + xDiff + ", " + yDiff + ") dxy=" + dxy);
+			xDiff = xDiff > 0 ? Math.min(xDiff, dxy) : Math.max(xDiff, -dxy);
+			yDiff = yDiff > 0 ? Math.min(yDiff, dxy) : Math.max(yDiff, -dxy);
+			System.out.println("output (" + xDiff + ", " + yDiff + ")");
+		}
 		switch (this.dragMode) {
 			case TopLeft:
 				left += xDiff;
@@ -262,7 +269,8 @@ public class GObject {
 			// this is a subsequent mouseDragged call
 			this.dragBoundingRect = this.dragRectangle(
 				e.getX() - this.dragStartPoint.x, 
-				e.getY() - this.dragStartPoint.y
+				e.getY() - this.dragStartPoint.y,
+				e.isShiftDown()
 				);
 			this.calcSelectionList();
 			Rectangle rectUnion = this.boundingRect.union(this.dragBoundingRect);
@@ -278,7 +286,8 @@ public class GObject {
 		if (this.isSelected && this.dragMode != DragMode.NotDragging) {
 			this.dragBoundingRect = this.dragRectangle(
 				e.getX() - this.dragStartPoint.x, 
-				e.getY() - this.dragStartPoint.y
+				e.getY() - this.dragStartPoint.y,
+				e.isShiftDown()
 				);
 			this.dragMode = DragMode.NotDragging;
 			// System.out.println("mouseReleased: dragBoundingRect " + this.dragBoundingRect);

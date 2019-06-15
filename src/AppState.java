@@ -1,10 +1,13 @@
+package src;
+
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
+import javax.swing.JPanel;
 
-import objects.GObject;
-import actions.ShowGridAction;
+import src.objects.GObject;
+import src.actions.ShowGridAction;
 
 enum AppMode {
   Normal,
@@ -16,6 +19,7 @@ public class AppState {
   private AppMode mode;
   private ArrayList<GObject> selectedObjects;
   private ShowGridAction showGridAction;
+  private JPanel drawingPanel;
 
   public AppState(ActionListener listener) {
     this.mode = AppMode.Normal;
@@ -64,6 +68,16 @@ public class AppState {
 
   public boolean getGrid() {
     return showGridAction.getBooleanValue();
+  }
+
+  // drawingPanel
+
+  public void setDrawingPanel(JPanel panel) {
+    this.drawingPanel = panel;
+  }
+
+  public JPanel getDrawingPanel() {
+    return this.drawingPanel;
   }
 
 }
