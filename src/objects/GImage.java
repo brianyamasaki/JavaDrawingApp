@@ -24,8 +24,8 @@ public class GImage extends GObject {
     super();
     Toolkit toolkit = Toolkit.getDefaultToolkit();
     this.rect = new Rectangle(x, y, width, height);
-    this.filename = "assets\\400x400.png";
-    this.image = toolkit.getImage(filename);
+    this.filename = "assets/400x400.png";
+    this.image = toolkit.createImage(filename);
     try {
       this.bufferedImage = ImageIO.read(new File(filename));
     } catch (IOException e) {
@@ -35,35 +35,36 @@ public class GImage extends GObject {
     // this.imageIcon = new ImageIcon(filename);
     this.calcBoundingBox();
   }
-   
-	@Override
-	public boolean pointInObject(Point pt) {
-		return rect.contains(pt);
-	}
 
-	@Override
-	protected void calcBoundingBox() {
-		this.boundingRect = new Rectangle(this.rect);
-		this.calcSelectionList();
-	}
+  @Override
+  public boolean pointInObject(Point pt) {
+    return rect.contains(pt);
+  }
+
+  @Override
+  protected void calcBoundingBox() {
+    this.boundingRect = new Rectangle(this.rect);
+    this.calcSelectionList();
+  }
 
   @Override
   public void draw(Graphics2D g2, Board board) {
-		Rectangle drawRect;
-		if (this.dragMode == DragMode.NotDragging) {
-			drawRect = this.rect;
-		} else {
-			drawRect = this.dragBoundingRect;
-		}
+    Rectangle drawRect;
+    if (this.dragMode == DragMode.NotDragging) {
+      drawRect = this.rect;
+    } else {
+      drawRect = this.dragBoundingRect;
+    }
     g2.drawImage(this.image, drawRect.x, drawRect.y, drawRect.width, drawRect.height, board);
     // g2.drawRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
   }
 
-	@Override
-	protected void resizeToRect(Rectangle rect) {
-		this.rect = new Rectangle(rect);
-		this.calcBoundingBox();
-		// System.out.println("resizeToRect sets to " + this.rect + " and " + this.boundingRect);
-	}
+  @Override
+  protected void resizeToRect(Rectangle rect) {
+    this.rect = new Rectangle(rect);
+    this.calcBoundingBox();
+    // System.out.println("resizeToRect sets to " + this.rect + " and " +
+    // this.boundingRect);
+  }
 
 }
