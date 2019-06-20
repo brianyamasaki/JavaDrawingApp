@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import src.Board;
+
 public class GRectangle extends GObject {
 
 	private Rectangle rect;
@@ -34,7 +36,7 @@ public class GRectangle extends GObject {
 	}
 	
 	@Override
-	public void draw(Graphics2D g2) {
+	public void draw(Graphics2D g2, Board board) {
 		Rectangle drawRect;
 		if (this.dragMode == DragMode.NotDragging) {
 			drawRect = this.rect;

@@ -67,18 +67,25 @@ public class App extends JFrame implements ActionListener {
             this.appContent.menuItemCommand(actionParts[0], actionParts[1]);
         }
     }
-
+    /* Component Adapter
+    *  Listen for the messages from the window frame
+    */
     private class CAdapter extends ComponentAdapter {
-        // catch when the user resizes the window
+        /* catch when the user resizes the window
+        *  Receives events that tell us what size the window is
+        *  @parm parameter string that tells us the size
+        */
         @Override
         public void componentResized(ComponentEvent e) {
             // expecting paramString to be of the form "COMPONENT_RESIZED (350,160 800x600)""
             String[] tokens = e.paramString().split(" ");
-            // now expecting tokens[2] to be "800x600)"
-            String[] dimTokens = tokens[2].split("x");
-            dimTokens[1] = dimTokens[1].substring(0, dimTokens[1].length()-1);
-            // System.out.println("Component resized " + dimTokens[0] + "x" + dimTokens[1]);
-            App.resized(Integer.parseInt(dimTokens[0], 10), Integer.parseInt(dimTokens[1], 10));
+            if (tokens[0].matches("COMPONENT_RESIZED")) {
+                // now expecting tokens[2] to be "800x600)"
+                String[] dimTokens = tokens[2].split("x");
+                dimTokens[1] = dimTokens[1].substring(0, dimTokens[1].length()-1);
+                // System.out.println("Component resized " + dimTokens[0] + "x" + dimTokens[1]);
+                App.resized(Integer.parseInt(dimTokens[0], 10), Integer.parseInt(dimTokens[1], 10));
+            }
         }
     }
 

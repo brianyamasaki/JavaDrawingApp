@@ -15,7 +15,7 @@ public class ShowGridAction extends AbstractAction {
   private ActionListener listener;
 
   public ShowGridAction(ActionListener listener, boolean showGrid) {
-    super(showGridTitleTrue);
+    super(showGrid ? showGridTitleTrue : showGridTitleFalse);
     this.listener = listener;
     this.setBooleanValue(showGrid);
     putValue(MNEMONIC_KEY, KeyEvent.VK_G);

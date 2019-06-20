@@ -22,7 +22,6 @@ import src.objects.*;
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
     public static AppState appState;
-    public static Board self;
 
     // private Timer timer;
     private ArrayList<GObject> objects;
@@ -33,8 +32,6 @@ public class Board extends JPanel implements ActionListener {
         super(new BorderLayout());
 
         Board.appState = appState;
-        Board.self = this;
-        appState.setDrawingPanel(this);
         this.initBoard();
     }
 
@@ -71,6 +68,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void deleteSelected() {
+        Board.appState.getSelectedObjects().removeIf((obj) -> obj.isSelected());
         this.objects.removeIf((obj) -> obj.isSelected());
     }
 
@@ -106,7 +104,7 @@ public class Board extends JPanel implements ActionListener {
         
         // draw objects
         for (GObject obj : objects) {
-            obj.draw(g2);
+            obj.draw(g2, this);
         }
 
         // draw selection dots
@@ -195,6 +193,8 @@ public class Board extends JPanel implements ActionListener {
             if (obj == null) {
                 appState.clearAllSelectedObjects();
             }
+            AppState.getRef().getContextPalette().refreshPalette();
+            
             if (!rectUpdate.isEmpty())
                 repaint(rectUpdate);
         }

@@ -1,10 +1,19 @@
 package src.objects;
 
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+
+import src.Board;
+
 import java.awt.Color;
 
 enum DragMode {
@@ -167,7 +176,7 @@ public class GObject {
 		return this.isSelected;
 	}
 
-	public void draw(Graphics2D g2) {
+	public void draw(Graphics2D g2, Board board) {
 		
 	}
 
@@ -296,6 +305,8 @@ public class GObject {
 			rectUnion.grow(dxySelectionSize, dxySelectionSize);
 			objReturn.setUpdateRect(rectUnion);
 			return objReturn;
+		} else {
+			this.setSelected(false);
 		}
 		return objReturn;
 	}
@@ -315,6 +326,17 @@ public class GObject {
 		objReturn.setClickMode(cm);
 		objReturn.setUpdateRect(this.selectedBoundingBox());
 		return objReturn;
+	}
+
+	protected JSpinner addLabeledSpinner(JPanel panel, String labelString, int value, int min, int max) {
+		JLabel label = new JLabel(labelString);
+		panel.add(label);
+
+		JSpinner spinner = new JSpinner(new SpinnerNumberModel(value, min, max, 1));
+		label.setLabelFor(spinner);
+		panel.add(spinner);
+
+		return spinner;
 	}
 
 	public String toString() {

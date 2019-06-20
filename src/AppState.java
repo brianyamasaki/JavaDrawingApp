@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 
 import src.objects.GObject;
+import src.pals.ContextPalette;
 import src.actions.ShowGridAction;
 
 enum AppMode {
@@ -19,12 +20,18 @@ public class AppState {
   private AppMode mode;
   private ArrayList<GObject> selectedObjects;
   private ShowGridAction showGridAction;
-  private JPanel drawingPanel;
+  private ContextPalette contextPalette;
+  private static AppState self;
 
   public AppState(ActionListener listener) {
     this.mode = AppMode.Normal;
     this.selectedObjects = new ArrayList<GObject>();
     this.showGridAction = new ShowGridAction(listener, true);
+    AppState.self = this;
+  }
+
+  public static AppState getRef() {
+    return AppState.self;
   }
 
   // Mode methods
@@ -70,14 +77,14 @@ public class AppState {
     return showGridAction.getBooleanValue();
   }
 
-  // drawingPanel
+  // contextPalette
 
-  public void setDrawingPanel(JPanel panel) {
-    this.drawingPanel = panel;
+  public void setContextPalette(ContextPalette contextPalette) {
+    this.contextPalette = contextPalette;
   }
 
-  public JPanel getDrawingPanel() {
-    return this.drawingPanel;
+  public ContextPalette getContextPalette() {
+    return this.contextPalette;
   }
 
 }

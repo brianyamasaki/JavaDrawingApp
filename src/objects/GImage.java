@@ -48,14 +48,14 @@ public class GImage extends GObject {
 	}
 
   @Override
-  public void draw(Graphics2D g2) {
+  public void draw(Graphics2D g2, Board board) {
 		Rectangle drawRect;
 		if (this.dragMode == DragMode.NotDragging) {
 			drawRect = this.rect;
 		} else {
 			drawRect = this.dragBoundingRect;
 		}
-    g2.drawImage(this.image, drawRect.x, drawRect.y, drawRect.width, drawRect.height, Board.self);
+    g2.drawImage(this.image, drawRect.x, drawRect.y, drawRect.width, drawRect.height, board);
     // g2.drawRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
   }
 
