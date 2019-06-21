@@ -8,10 +8,12 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumSet;
 
 import javax.imageio.ImageIO;
 
 import src.Board;
+import src.pals.ContextPaletteGroup;
 
 public class GImage extends GObject {
   protected Rectangle rect;
@@ -66,6 +68,11 @@ public class GImage extends GObject {
     // System.out.println("resizeToRect sets to " + this.rect + " and " +
     // this.boundingRect);
   }
+
+  @Override
+	public EnumSet<ContextPaletteGroup> getContextProperties() {
+		return EnumSet.of(ContextPaletteGroup.BoundingBox, ContextPaletteGroup.Image);
+	}
 
   @Override
   public String toString() {

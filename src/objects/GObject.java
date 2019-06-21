@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import src.Board;
+import src.pals.ContextPaletteGroup;
 
 import java.awt.Color;
 
@@ -364,8 +366,12 @@ public class GObject {
 		return spinner;
 	}
 
+	public EnumSet<ContextPaletteGroup> getContextProperties() {
+		return EnumSet.of(ContextPaletteGroup.BoundingBox);
+	}
+
 	public String toString() {
-		return "<Graphic Object />";
+		return "<Graphic_Object />";
 	}
 
 }
