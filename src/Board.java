@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 // import javax.swing.Timer;
 import src.objects.*;
+import src.pals.ContextPalette;
 
 public class Board extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
@@ -128,6 +129,17 @@ public class Board extends JPanel implements ActionListener {
         //         spaceShip.getWidth()+2, spaceShip.getHeight()+2);     
     }
 
+    public void objectContextCommand(String command) {
+        String[] tokens = command.split(" ");
+        if (tokens[0].matches(ContextPalette.strSelection)) {
+            ArrayList<GObject> selectedObjects = appState.getSelectedObjects();
+            for (GObject obj : selectedObjects) {
+                obj.contextCommand(tokens[1], tokens[2]);
+            }
+            repaint();
+        }
+    }
+
     public static GObjReturn pointInSelection(MouseEvent e) {
         GObjReturn objReturn = new GObjReturn();
         Point pt = e.getPoint();
@@ -207,6 +219,7 @@ public class Board extends JPanel implements ActionListener {
                 objReturn = obj.mouseReleased(e);
                 rectUpdate = objReturn.getUpdateRect().union(rectUpdate);
             }
+            AppState.getRef().getContextPalette().refreshPalette();
             if (!rectUpdate.isEmpty())
                 repaint();
       }
@@ -223,6 +236,7 @@ public class Board extends JPanel implements ActionListener {
                 objReturn = obj.mouseDragged(e);
                 rectUpdate = rectUpdate.union(objReturn.getUpdateRect());
             }
+            AppState.getRef().getContextPalette().refreshPalette();
             if (!rectUpdate.isEmpty()) {
                 // System.out.println("drag update rectangle is " + rectUpdate);
                 repaint(rectUpdate);

@@ -18,16 +18,16 @@ public class AppContent extends JPanel {
   public AppContent(ActionListener listener, AppState appState) {
     super(new BorderLayout());
 
-    // create a toolbar
-    this.toolBar = new ToolBar(listener, appState);
-    // place toolbar on the left side of JPanel
-    this.add(this.toolBar, BorderLayout.WEST);
+    // // create a toolbar
+    // this.toolBar = new ToolBar(listener, appState);
+    // // place toolbar on the left side of JPanel
+    // this.add(this.toolBar, BorderLayout.WEST);
+    this.board = new Board(appState);
 
-    this.contextPalette = new ContextPalette(listener, appState);
+    this.contextPalette = new ContextPalette(this.board, appState);
     this.add(this.contextPalette, BorderLayout.EAST);
     appState.setContextPalette(this.contextPalette);
     
-    this.board = new Board(appState);
     this.add(this.board, BorderLayout.CENTER);
 
   }

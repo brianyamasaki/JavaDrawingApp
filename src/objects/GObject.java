@@ -1,7 +1,6 @@
 package src.objects;
 
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.Rectangle;
@@ -56,6 +55,10 @@ public class GObject {
 		this.boundingRect = new Rectangle();
 		this.dragStartPoint = new Point();
 		this.calcSelectionList();
+	}
+
+	public Rectangle getBoundingRect() {
+		return this.boundingRect;
 	}
 
 	/**
@@ -257,6 +260,28 @@ public class GObject {
 				break;
 		}
 		return new Rectangle(left, top, width, height);
+}
+
+	public void contextCommand(String field, String strValue) {
+		Rectangle rect = new Rectangle(this.boundingRect);
+		int val = Integer.parseInt(strValue);
+		switch(field) {
+			case "X":
+				rect.x = val;
+				break;
+			case "Y": 
+				rect.y = val;
+				break;
+			case "Width":
+				rect.width = val;
+				break;
+			case "Height":
+				rect.height = val;
+				break;
+			default:
+				break;
+		}
+		this.resizeToRect(rect);
 }
 
 	/* Mouse dragging starts with a mouseDragged event (not a mouseDown), 

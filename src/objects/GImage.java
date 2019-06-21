@@ -67,4 +67,9 @@ public class GImage extends GObject {
     // this.boundingRect);
   }
 
+  @Override
+  public String toString() {
+    return String.format("<GImage filename=\"%s\" />", this.filename);
+  }
+
 }
